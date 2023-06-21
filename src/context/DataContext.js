@@ -6,7 +6,7 @@ export const DataContext = createContext({});
 export const DataProvider = ({children}) => {
    const [dadosUsuario, setDadosUsuario] = useState('');
 
-   const saveDadosUsuario = (jwt) => {
+   const armazenarDadosUsuario = (jwt) => {
         var jwtDecodificado = jwt_decode(jwt);
         var usuario = jwtDecodificado.user;
         usuario = JSON.parse(usuario);
@@ -21,7 +21,7 @@ export const DataProvider = ({children}) => {
 
    }
    return (
-      <DataContext.Provider value={{dadosUsuario, saveDadosUsuario}}>
+      <DataContext.Provider value={{dadosUsuario, armazenarDadosUsuario}}>
          {children}
       </DataContext.Provider>
    )

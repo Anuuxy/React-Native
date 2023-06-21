@@ -5,27 +5,6 @@ import { useContext, useState, useEffect } from 'react';
 import AxiosInstance from '../../api/AxiosInstance';
 import { DataContext } from '../../context/DataContext';
 
-// // Importe as imagens das editoras aqui
-//  const editora1 = require('../../../assets/editora.png');
-//  const editora2 = require('../../../assets/editora2.png');
-//  const editora3 = require('../../../assets/editora3.png');
-
-// // Importe as imagens dos livros disponíveis aqui
-// const livro1 = require('../../../assets/livro.jpg');
-// const livro2 = require('../../../assets/livro2.jpg');
-// const livro3 = require('../../../assets/livro3.jpg');
-// const livro4 = require('../../../assets/livro4.jpg');
-// const livro5 = require('../../../assets/livro5.jpg');
-// const livro6 = require('../../../assets/livro6.jpg');
-
-// //  imagens dos livros em destaque aqui
-//  const destaque1 = require('../../../assets/livro.jpg');
-//  const destaque2 = require('../../../assets/livro2.jpg');
-//  const destaque3 = require('../../../assets/livro3.jpg');
-//  const destaque4 = require('../../../assets/livro4.jpg');
-//  const destaque5 = require('../../../assets/livro5.jpg');
-//  const destaque6 = require('../../../assets/livro6.jpg');
-
  const Home = () => {
     const {dadosUsuario} = useContext(DataContext);
     const [dadosEditora, setDadosEditora] = useState([]);
@@ -53,15 +32,14 @@ import { DataContext } from '../../context/DataContext';
       <View>
         <ScrollView>
         
-          <View style={{ marginTop: 55, alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}> Editoras</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 10 }}>
-              {/* foto de editora */}
-              <Image source={editora1} style={{ width: 80, height: 80 }} />
-              <Image source={editora2} style={{ width: 80, height: 80 }} />
-              <Image source={editora3} style={{ width: 80, height: 80 }} />
-            </View>
-          </View>
+        <View style={{ marginTop: 55, alignItems: 'center' }}>
+  <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Editoras</Text>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 10 }}>
+    {dadosEditora.map((editora, index) => (
+      <Image key={index} source={{ uri: editora.imagem }} style={{ width: 80, height: 80 }} />
+    ))}
+  </View>
+</View>
   
           <View style={{ marginTop: 50}}>
           <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}> Todos os livros</Text>

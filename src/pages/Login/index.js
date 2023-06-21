@@ -1,160 +1,114 @@
-import React, { useContext, useState } from 'react';
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Image, Text, TouchableWithoutFeedback } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import AxiosInstance from '../../api/AxiosInstance';
-import { DataContext } from '../../context/DataContext';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StatusBar,
+} from "react-native";
+import Logo from "../../../assets/Logo.png";
+import { useState, useContext } from "react";
+import AxiosInstance from '../../api/AxiosInstance'
+import { DataContext } from '../../context/DataContext'
 
-const Login = (navigation) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
-  const { saveDadosUsuario } = useContext(DataContext);
+export  default function Login({navigation}) {
 
+  const [usuario, setUsuario] = useState()
+  const [senha, setSenha] = useState()
+  const {armazenarDadosUsuario} = useContext(DataContext)
 
-  const handleLogin = async () => {
-    // Lógica de autenticação aqui
-    console.log('Email:', email);
-    console.log('Senha:', password);
-    // Lógica adicional para autenticar o usuário
-
+  async function handleLogin(){
     try {
-      const resultado = await AxiosInstance.post('/auth/signin/',{
-      username: email,
-        password: senha,
-    });
+      const resultado = await AxiosInstance.post('/auth/signin',{
+          username: usuario,
+          password: senha
+        });
 
-    if(resultado.status === 200) {
+      if(resultado.status === 200) {
+        var jwtToken = resultado.data;
+        armazenarDadosUsuario(jwtToken["accessToken"]);
 
-      var jwtToken = resultado.data;
-      saveDadosUsuario(jwtToken ["acessToken"]);
-
-      navigation.navigate("Home");
+        navigation.navigate('Home')
+      } else {
+        console.log('Erro ao realizar o login!')
+      }
+    } catch (error) {
+      console.log(error);
     }
-    else{
-      alert("Usuário ou senha inválidos");
-    }
-  }catch(error){
-    console.log('Erro durante o processo de login' + error);
-
-}
   }
-
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleButtonPress = () => {
-    setIsButtonPressed(true);
-  };
-
-  const handleButtonRelease = () => {
-    setIsButtonPressed(false);
-  };
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../../assets/logo.png')} style={styles.logo} resizeMode="contain" />
-      <Text style={styles.welcomeText}>Bem vindo!</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={text => setEmail(text)}
-        value={email}
-        placeholderTextColor="black"
-      />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.passwordInput}
-          placeholder="Senha"
-          secureTextEntry={!showPassword}
-          onChangeText={text => setPassword(text)}
-          value={password}
-          placeholderTextColor="black"
-        />
-        <TouchableOpacity style={styles.passwordVisibilityButton} onPress={handleTogglePasswordVisibility}>
-          <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="black" />
-        </TouchableOpacity>
+      <StatusBar />
+      <Text style={styles.titulo}>Livraria</Text>
+      <View style={styles.logoContainer}>
+        <Image source={Logo} style={styles.logo}/>
       </View>
-      <TouchableWithoutFeedback onPress={handleLogin} onPressIn={handleButtonPress} onPressOut={handleButtonRelease}>
-        <View
-          style={[
-            styles.button,
-            isButtonPressed ? styles.buttonPressed : null,
-          ]}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      <Text style={styles.saudacao}>Bem-vindo(a)</Text>
+      <TextInput style={styles.input} placeholder="Nome de usuário" onChangeText={setUsuario} value={usuario}/>
+      <TextInput style={styles.input} placeholder="Senha" onChangeText={setSenha} value={senha}/>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text>Login</Text>
+      </TouchableOpacity>
+      <StatusBar style="auto"/>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'gray',
+    backgroundColor: "rgba(57,68,87,1)",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
   },
-  logo: {
-    width: 400,
-    height: 300,
-    marginBottom: 20,
+  titulo: {
+    fontSize: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
-  welcomeText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  saudacao: {
+    fontSize: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
   input: {
-    width: '80%',
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    color: 'black',
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    width: '80%',
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    paddingHorizontal: 10,
-    color: 'black',
-  },
-  passwordVisibilityButton: {
-    position: 'absolute',
-    right: 10,
-    height: '100%',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
+    fontSize: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 20,
+    border: "none",
+    backgroundColor: "#FFF",
+    width: 200,
   },
   button: {
-    width: 200,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffbd59",
+    width: 70,
     height: 40,
-    backgroundColor: 'aliceblue',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  buttonPressed: {
-    backgroundColor: 'darkgray',
-  },
-  buttonText: {
-    color: 'black',
+    marginTop: 50,
+    borderRadius: 20,
     fontSize: 15,
-    fontWeight: 'bold',
+    padding: 10,
+    border: "none",
+  },
+  logoContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 150,
+  },
+  logo: {
+    height: "100%",
+    width: 120
   },
 });
-
-export default Login;
