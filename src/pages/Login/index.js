@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity, Image, Text, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AxiosInstance from '../../api/AxiosInstance';
+import { DataContext } from '../../context/DataContext';
 
-const Login = () => {
+const Login = (navigation) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const { saveDadosUsuario } = useContext(DataContext);
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
     // Lógica de autenticação aqui
     console.log('Email:', email);
     console.log('Senha:', password);
     // Lógica adicional para autenticar o usuário
-  };
+
+    try {
+      const resultado = await AxiosInstance.post('/auth/signin/',{
+      username: email,
+        password: senha,
+    });
+
+    if(resultado.status === 200) {
+
+      var jwtToken = resultado.data;
+      saveDadosUsuario(jwtToken ["acessToken"]);
+
+      navigation.navigate("Home");
+    }
+    else{
+      alert("Usuário ou senha inválidos");
+    }
+  }catch(error){
+    console.log('Erro durante o processo de login' + error);
+
+}
+  }
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);

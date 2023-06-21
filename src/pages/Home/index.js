@@ -1,30 +1,54 @@
 import React from 'react';
 import { View, Image, ScrollView, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useContext, useState, useEffect } from 'react';
+import AxiosInstance from '../../api/AxiosInstance';
+import { DataContext } from '../../context/DataContext';
 
+// // Importe as imagens das editoras aqui
+//  const editora1 = require('../../../assets/editora.png');
+//  const editora2 = require('../../../assets/editora2.png');
+//  const editora3 = require('../../../assets/editora3.png');
 
-// Importe as imagens das editoras aqui
- const editora1 = require('../../../assets/editora.png');
- const editora2 = require('../../../assets/editora2.png');
- const editora3 = require('../../../assets/editora3.png');
+// // Importe as imagens dos livros disponíveis aqui
+// const livro1 = require('../../../assets/livro.jpg');
+// const livro2 = require('../../../assets/livro2.jpg');
+// const livro3 = require('../../../assets/livro3.jpg');
+// const livro4 = require('../../../assets/livro4.jpg');
+// const livro5 = require('../../../assets/livro5.jpg');
+// const livro6 = require('../../../assets/livro6.jpg');
 
-// Importe as imagens dos livros disponíveis aqui
-const livro1 = require('../../../assets/livro.jpg');
-const livro2 = require('../../../assets/livro2.jpg');
-const livro3 = require('../../../assets/livro3.jpg');
-const livro4 = require('../../../assets/livro4.jpg');
-const livro5 = require('../../../assets/livro5.jpg');
-const livro6 = require('../../../assets/livro6.jpg');
-
-//  imagens dos livros em destaque aqui
- const destaque1 = require('../../../assets/livro.jpg');
- const destaque2 = require('../../../assets/livro2.jpg');
- const destaque3 = require('../../../assets/livro3.jpg');
- const destaque4 = require('../../../assets/livro4.jpg');
- const destaque5 = require('../../../assets/livro5.jpg');
- const destaque6 = require('../../../assets/livro6.jpg');
+// //  imagens dos livros em destaque aqui
+//  const destaque1 = require('../../../assets/livro.jpg');
+//  const destaque2 = require('../../../assets/livro2.jpg');
+//  const destaque3 = require('../../../assets/livro3.jpg');
+//  const destaque4 = require('../../../assets/livro4.jpg');
+//  const destaque5 = require('../../../assets/livro5.jpg');
+//  const destaque6 = require('../../../assets/livro6.jpg');
 
  const Home = () => {
+    const {dadosUsuario} = useContext(DataContext);
+    const [dadosEditora, setDadosEditora] = useState([]);
+
+    useEffect(() =>{
+      getTodasEditoras();
+    }
+    )
+
+    const getTodasEditoras = async () => {
+      await AxiosInstance.get(
+        '/editoras', 
+        {headers: {"Authorization" : `Bearer ${dadosUsuario?.token}`}}
+      ).then( resultado => {
+        console.log('getTodasEditoras' + JSON.stringify(resultado.data));
+          setDadosEditora(resultado.data);
+      }).catch((error) => {
+        console.log('Ocorreu um erro inesperado' + error);
+      })
+    
+
+    }
+
     return (
       <View>
         <ScrollView>
